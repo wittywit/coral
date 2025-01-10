@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#FF6F61">
+    <title>Coral</title>
+    <style>
+        /* Import Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Merriweather:ital,wght@1,400&display=swap');
+
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: #FFF1E6;
+            color: #333;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: #FF6F61;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            font-weight: 400;
+            color: #4E4E4E;
+            margin-bottom: 20px;
+        }
+
+        .poem {
+            font-family: 'Merriweather', serif;
+            font-size: 1.2em;
+            font-style: italic;
+            line-height: 1.6;
+            color: #4E4E4E;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        /* Task List Styles */
+        .checklist {
+            position: absolute;
+            bottom: 20px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .checklist label {
+            display: inline-block;
+            background-color: #FF6F61;
+            color: white;
+            font-size: 1em;
+            padding: 10px 20px;
+            margin: 5px 5px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            text-decoration: none;
+            font-weight: 400;
+        }
+
+        .checklist label.completed {
+            background-color: #CCC;
+            color: #666;
+            text-decoration: line-through;
+        }
+
+        .checklist label:hover {
+            background-color: #FF866F;
+            transform: scale(1.05);
+        }
+
+        .checklist input {
+            display: none; /* Hide the actual checkboxes */
+        }
+
+        button {
+            font-family: 'Poppins', sans-serif;
+            background-color: #FF6F61;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            text-transform: uppercase;
+        }
+
+        button:disabled {
+            background-color: #FFC4B1;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Coral</h1>
+    <h2 id="current-phase">Phase: Mind & Body Activation</h2>
+    <p class="poem" id="poetic-message">
+        Awake your soul, let muscles move,<br>
+        Breathe in peace, let energy groove.
+    </p>
+
+    <button id="start-reminder">Start Journey</button>
+
+    <div class="checklist" id="task-list">
+        <!-- Tasks will be dynamically added here -->
+    </div>
+
+    <audio id="ringtone" src="https://www.soundjay.com/button/beep-07.mp3"></audio>
+    <script>
+        const phases = [
+            { 
+                name: "Mind & Body Activation", 
+                duration: 30, 
+                poem: "Awake your soul, let muscles move,<br>Breathe in peace, let energy groove.",
+                tasks: ["Do a 10-minute stretch", "Drink a glass of water", "Practice deep breathing"] 
+            },
+            { 
+                name: "Self-Development Sprint", 
+                duration: 60, 
+                poem: "A moment to grow, a moment to learn,<br>Fuel the fire, let passion burn.",
+                tasks: ["Read 10 pages of a book", "Write down 3 new ideas", "Practice a new skill"] 
+            },
+            { 
+                name: "Core Work Block", 
+                duration: 120, 
+                poem: "Focus your mind, create with care,<br>The world awaits what you will share.",
+                tasks: ["Complete a major task", "Respond to important emails", "Collaborate with a teammate"] 
+            },
+            { 
+                name: "Reflection & Recharge", 
+                duration: 30, 
+                poem: "Pause your pace, let calmness bloom,<br>A quiet heart clears the room.",
+                tasks: ["Take a 10-minute walk", "Write in your journal", "Listen to calming music"] 
+            },
+        ];
+
+        let currentPhaseIndex = 0;
+        let reminderTimeout;
+
+        const ringtone = document.getElementById("ringtone");
+        const startButton = document.getElementById("start-reminder");
+        const currentPhaseDisplay = document.getElementById("current-phase");
+        const poeticMessage = document.getElementById("poetic-message");
+        const taskList = document.getElementById("task-list");
+
+        const updateChecklist = (tasks) => {
+            taskList.innerHTML = ""; // Clear the existing tasks
+            tasks.forEach((task, index) => {
+                const taskItem = document.createElement("label");
+                taskItem.innerText = task; // Set the text for the task
+                taskItem.setAttribute("for", `task-${index}`);
+                taskItem.classList.add("task-pill");
+
+                // Hidden checkbox for task tracking
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.id = `task-${index}`;
+                checkbox.addEventListener("change", (e) => {
+                    // Strike-through and disable task when clicked
+                    if (e.target.checked) {
+                        taskItem.classList.add("completed");
+                    } else {
+                        taskItem.classList.remove("completed");
+                    }
+                });
+
+                taskList.appendChild(checkbox); // Add checkbox to DOM
+                taskList.appendChild(taskItem); // Add task pill to DOM
+            });
+        };
+
+        const startPhase = (phase) => {
+            currentPhaseDisplay.innerText = `Phase: ${phase.name}`;
+            poeticMessage.innerHTML = phase.poem;
+            updateChecklist(phase.tasks);
+
+            // Play notification sound
+            ringtone.play();
+        };
+
+        const nextPhase = () => {
+            if (currentPhaseIndex >= phases.length) {
+                currentPhaseDisplay.innerText = "All Phases Completed!";
+                poeticMessage.innerHTML = "A day well spent, a heart so full,<br>Life's moments bright, so beautiful.";
+                taskList.innerHTML = ""; // Clear tasks
+                startButton.disabled = false; // Enable start button
+                clearTimeout(reminderTimeout); // Clear any pending timeouts
+                return;
+            }
+
+            // Start the current phase
+            const phase = phases[currentPhaseIndex];
+            startPhase(phase);
+
+            // Move to the next phase after the current phase duration
+            reminderTimeout = setTimeout(() => {
+                currentPhaseIndex++;
+                nextPhase();
+            }, phase.duration * 60 * 1000); // Convert minutes to milliseconds
+        };
+
+        startButton.addEventListener("click", () => {
+            currentPhaseIndex = 0; // Reset to the first phase
+            nextPhase(); // Start the phases
+            startButton.disabled = true; // Disable start button to prevent re-clicking
+        });
+    </script>
+</body>
+</html>
