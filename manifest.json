@@ -1,10 +1,11 @@
 {
     "name": "Coral",
     "short_name": "Coral",
-    "start_url": "./",
+    "start_url": "/index.html",
+    "scope": "/",
     "display": "standalone",
     "background_color": "#f5f5f5",
-    "theme_color": "#4CAF50",
+    "theme_color": "#FF6F61",
     "icons": [
         {
             "src": "icon-192.png",
