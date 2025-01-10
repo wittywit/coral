@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#FF6F61">
-    <title>Coral</title>
+    <title>Daily Flow</title>
     <style>
-        /* Import Google Fonts */
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Merriweather:ital,wght@1,400&display=swap');
-
         /* General Reset */
         * {
             margin: 0;
@@ -17,96 +14,99 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Arial', sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             height: 100vh;
             background: #FFF1E6;
             color: #333;
             text-align: center;
-            overflow: hidden;
         }
 
         h1 {
             font-size: 2.5em;
-            font-weight: 700;
-            letter-spacing: 0.05em;
+            font-weight: bold;
             color: #FF6F61;
-            text-transform: uppercase;
-            margin-bottom: 10px;
+            animation: fadeIn 1s ease-in-out;
+            margin-top: 10px;
         }
 
         h2 {
             font-size: 1.5em;
-            font-weight: 400;
+            font-weight: normal;
             color: #4E4E4E;
-            margin-bottom: 20px;
         }
 
         .poem {
-            font-family: 'Merriweather', serif;
             font-size: 1.2em;
             font-style: italic;
             line-height: 1.6;
             color: #4E4E4E;
-            animation: fadeIn 1.5s ease-in-out;
+            margin: 10px 0;
         }
 
-        /* Task List Styles */
+        /* Task List */
         .checklist {
-            position: absolute;
-            bottom: 20px;
             width: 90%;
             text-align: center;
         }
 
         .checklist label {
             display: inline-block;
-            background-color: #FF6F61;
+            background: #FF6F61;
             color: white;
-            font-size: 1em;
             padding: 10px 20px;
-            margin: 5px 5px;
+            margin: 5px;
             border-radius: 20px;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            text-decoration: none;
-            font-weight: 400;
+            transition: all 0.3s ease;
         }
 
         .checklist label.completed {
-            background-color: #CCC;
+            background: #CCC;
             color: #666;
             text-decoration: line-through;
         }
 
-        .checklist label:hover {
-            background-color: #FF866F;
-            transform: scale(1.05);
-        }
-
         .checklist input {
-            display: none; /* Hide the actual checkboxes */
+            display: none;
         }
 
         button {
-            font-family: 'Poppins', sans-serif;
             background-color: #FF6F61;
             color: white;
             padding: 12px 24px;
             border: none;
             border-radius: 25px;
             font-size: 1em;
-            font-weight: 700;
+            font-weight: bold;
             cursor: pointer;
-            margin-top: 20px;
-            text-transform: uppercase;
+            margin: 10px 0;
         }
 
         button:disabled {
             background-color: #FFC4B1;
+        }
+
+        /* Mute Toggle */
+        .mute-toggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: #FF6F61;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
         }
 
         @keyframes fadeIn {
@@ -122,80 +122,80 @@
     </style>
 </head>
 <body>
-    <h1>Coral</h1>
+    <button class="mute-toggle" id="mute-toggle">🔊</button>
+    <h1>Daily Flow</h1>
     <h2 id="current-phase">Phase: Mind & Body Activation</h2>
     <p class="poem" id="poetic-message">
         Awake your soul, let muscles move,<br>
         Breathe in peace, let energy groove.
     </p>
 
-    <button id="start-reminder">Start Journey</button>
-
     <div class="checklist" id="task-list">
-        <!-- Tasks will be dynamically added here -->
+        <!-- Tasks dynamically added here -->
     </div>
 
-    <audio id="ringtone" src="https://www.soundjay.com/button/beep-07.mp3"></audio>
+    <button id="start-reminder">Start Journey</button>
+
+    <audio id="music-phase-1" src="./media/phase1.mp3"></audio>
+    <audio id="music-phase-2" src="./media/phase2.mp3"></audio>
+    <audio id="music-phase-3" src="./media/phase3.mp3"></audio>
+    <audio id="music-phase-4" src="./media/phase4.mp3"></audio>
     <script>
         const phases = [
-            { 
-                name: "Mind & Body Activation", 
-                duration: 30, 
+            {
+                name: "Mind & Body Activation",
+                duration: 30,
                 poem: "Awake your soul, let muscles move,<br>Breathe in peace, let energy groove.",
-                tasks: ["Do a 10-minute stretch", "Drink a glass of water", "Practice deep breathing"] 
+                tasks: ["Do a 10-minute stretch", "Drink a glass of water", "Practice deep breathing"],
+                music: "music-phase-1"
             },
-            { 
-                name: "Self-Development Sprint", 
-                duration: 60, 
+            {
+                name: "Self-Development Sprint",
+                duration: 60,
                 poem: "A moment to grow, a moment to learn,<br>Fuel the fire, let passion burn.",
-                tasks: ["Read 10 pages of a book", "Write down 3 new ideas", "Practice a new skill"] 
+                tasks: ["Read 10 pages of a book", "Write down 3 new ideas", "Practice a new skill"],
+                music: "music-phase-2"
             },
-            { 
-                name: "Core Work Block", 
-                duration: 120, 
+            {
+                name: "Core Work Block",
+                duration: 120,
                 poem: "Focus your mind, create with care,<br>The world awaits what you will share.",
-                tasks: ["Complete a major task", "Respond to important emails", "Collaborate with a teammate"] 
+                tasks: ["Complete a major task", "Respond to important emails", "Collaborate with a teammate"],
+                music: "music-phase-3"
             },
-            { 
-                name: "Reflection & Recharge", 
-                duration: 30, 
+            {
+                name: "Reflection & Recharge",
+                duration: 30,
                 poem: "Pause your pace, let calmness bloom,<br>A quiet heart clears the room.",
-                tasks: ["Take a 10-minute walk", "Write in your journal", "Listen to calming music"] 
+                tasks: ["Take a 10-minute walk", "Write in your journal", "Listen to calming music"],
+                music: "music-phase-4"
             },
         ];
 
         let currentPhaseIndex = 0;
-        let reminderTimeout;
+        let isMuted = false;
 
-        const ringtone = document.getElementById("ringtone");
+        const muteToggle = document.getElementById("mute-toggle");
         const startButton = document.getElementById("start-reminder");
         const currentPhaseDisplay = document.getElementById("current-phase");
         const poeticMessage = document.getElementById("poetic-message");
         const taskList = document.getElementById("task-list");
 
         const updateChecklist = (tasks) => {
-            taskList.innerHTML = ""; // Clear the existing tasks
+            taskList.innerHTML = ""; // Clear tasks
             tasks.forEach((task, index) => {
-                const taskItem = document.createElement("label");
-                taskItem.innerText = task; // Set the text for the task
-                taskItem.setAttribute("for", `task-${index}`);
-                taskItem.classList.add("task-pill");
+                const label = document.createElement("label");
+                label.innerText = task;
 
-                // Hidden checkbox for task tracking
+                // Hidden checkbox
                 const checkbox = document.createElement("input");
                 checkbox.type = "checkbox";
-                checkbox.id = `task-${index}`;
-                checkbox.addEventListener("change", (e) => {
-                    // Strike-through and disable task when clicked
-                    if (e.target.checked) {
-                        taskItem.classList.add("completed");
-                    } else {
-                        taskItem.classList.remove("completed");
-                    }
+                checkbox.addEventListener("change", () => {
+                    label.classList.toggle("completed");
                 });
 
-                taskList.appendChild(checkbox); // Add checkbox to DOM
-                taskList.appendChild(taskItem); // Add task pill to DOM
+                taskList.appendChild(checkbox);
+                taskList.appendChild(label);
             });
         };
 
@@ -204,8 +204,11 @@
             poeticMessage.innerHTML = phase.poem;
             updateChecklist(phase.tasks);
 
-            // Play notification sound
-            ringtone.play();
+            // Play phase music
+            if (!isMuted) {
+                const music = document.getElementById(phase.music);
+                if (music) music.play();
+            }
         };
 
         const nextPhase = () => {
@@ -213,35 +216,29 @@
                 currentPhaseDisplay.innerText = "All Phases Completed!";
                 poeticMessage.innerHTML = "A day well spent, a heart so full,<br>Life's moments bright, so beautiful.";
                 taskList.innerHTML = ""; // Clear tasks
-                startButton.disabled = false; // Enable start button
-                clearTimeout(reminderTimeout); // Clear any pending timeouts
+                startButton.disabled = false;
                 return;
             }
 
-            // Start the current phase
             const phase = phases[currentPhaseIndex];
             startPhase(phase);
 
-            // Move to the next phase after the current phase duration
-            reminderTimeout = setTimeout(() => {
+            setTimeout(() => {
                 currentPhaseIndex++;
                 nextPhase();
-            }, phase.duration * 60 * 1000); // Convert minutes to milliseconds
+            }, phase.duration * 60 * 1000); // Convert to milliseconds
         };
 
         startButton.addEventListener("click", () => {
-            currentPhaseIndex = 0; // Reset to the first phase
-            nextPhase(); // Start the phases
-            startButton.disabled = true; // Disable start button to prevent re-clicking
+            currentPhaseIndex = 0; // Reset phases
+            nextPhase();
+            startButton.disabled = true;
         });
 
-        if ("serviceWorker" in navigator) {
-    navigator.serviceWorker
-        .register("service-worker.js")
-        .then(() => console.log("Service Worker registered"))
-        .catch((error) => console.error("Service Worker registration failed:", error));
-}
-
+        muteToggle.addEventListener("click", () => {
+            isMuted = !isMuted;
+            muteToggle.innerText = isMuted ? "🔇" : "🔊";
+        });
     </script>
 </body>
 </html>
