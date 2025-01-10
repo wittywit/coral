@@ -20,7 +20,9 @@
             align-items: center;
             justify-content: space-between;
             height: 100vh;
-            background: #FFF1E6;
+            background: linear-gradient(120deg, #FF6F61, #FFF1E6);
+            background-size: 400% 400%;
+            animation: wave 30s ease infinite;
             color: #333;
             text-align: center;
         }
@@ -29,7 +31,6 @@
             font-size: 2.5em;
             font-weight: bold;
             color: #FF6F61;
-            animation: fadeIn 1s ease-in-out;
             margin-top: 10px;
         }
 
@@ -109,14 +110,15 @@
             font-weight: bold;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
+        @keyframes wave {
+            0% {
+                background-position: 0% 50%;
             }
-            to {
-                opacity: 1;
-                transform: translateY(0);
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
             }
         }
     </style>
@@ -140,6 +142,7 @@
     <audio id="music-phase-2" src="./media/phase2.mp3"></audio>
     <audio id="music-phase-3" src="./media/phase3.mp3"></audio>
     <audio id="music-phase-4" src="./media/phase4.mp3"></audio>
+    
     <script>
         const phases = [
             {
@@ -205,9 +208,10 @@
             updateChecklist(phase.tasks);
 
             // Play phase music
-            if (!isMuted) {
-                const music = document.getElementById(phase.music);
-                if (music) music.play();
+            const music = document.getElementById(phase.music);
+            if (!isMuted && music) {
+                music.currentTime = 0;
+                music.play();
             }
         };
 
@@ -239,6 +243,19 @@
             isMuted = !isMuted;
             muteToggle.innerText = isMuted ? "🔇" : "🔊";
         });
+
+         if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+            navigator.serviceWorker
+                .register("./service-worker.js")
+                .then((registration) => {
+                    console.log("Service Worker registered with scope:", registration.scope);
+                })
+                .catch((error) => {
+                    console.log("Service Worker registration failed:", error);
+                });
+        });
+    }
     </script>
 </body>
 </html>
